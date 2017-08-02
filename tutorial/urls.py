@@ -21,7 +21,7 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('learnslug.urls')),
+    url(r'^', include('learndjangoautoslug.urls')),
 ]
 
 if settings.DEBUG:
