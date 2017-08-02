@@ -31,6 +31,8 @@ class ArticleWithDjangoAutoSlug(models.Model):
         return "\nid\t:{}\ntitle\t:{}\nslug\t:{}\n".format(self.id, self.title, self.slug)
 ```
 
+
+In the shell `python manage.py shell`
 ```python
 from learndjangoautoslug.models import ArticleWithDjango
 from learndjangoautoslug.models import ArticleWithDjangoAutoSlug
