@@ -3,7 +3,7 @@
 
 ### Creating some models
 please see the models.py file
-```
+```python
 class ArticleWithDjango(models.Model):
     '''
     The slug will not automatically created
