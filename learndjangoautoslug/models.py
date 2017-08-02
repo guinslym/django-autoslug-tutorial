@@ -24,6 +24,38 @@ title   :Hello world
 slug    :
 """
 
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+
+class ArticleWithDjangoUsingSignals(models.Model):
+    '''
+    The slug will not automatically created
+    '''
+    title = models.CharField(max_length=200)
+    pub_date = models.DateField(auto_now_add=True)
+    slug = models.SlugField(unique=True, max_length=50, allow_unicode=False)
+
+    def __repr__(self):
+        return "\nid\t:{}\ntitle\t:{}\nslug\t:{}\n".format(self.id, self.title, self.slug)
+
+@receiver(pre_save, sender=ArticleWithDjangoUsingSignals)
+def add_content_to_the_slugfield(sender, instance, *args, **kwargs):
+    instance.slug = slugify(instance.title)
+
+
+
+"""
+from learndjangoautoslug.models import ArticleWithDjangoUsingSignals
+
+In [2]: ArticleWithDjangoUsingSignals.objects.create(title="Hello world my pythonistas")
+Out[2]:
+
+id      :1
+title   :Hello world my pythonistas
+slug    :hello-world-my-pythonistas
+"""
+
 class ArticleWithDjangoAutoSlug(models.Model):
     '''An article with title, date and slug. The slug is not totally
     unique but there will be no two articles with the same slug within
@@ -121,12 +153,14 @@ slug    :hello_world_to_all_my_pythonistas_g0ub6
 """
 
 from learndjangoautoslug.models import ArticleWithDjango
+from learndjangoautoslug.models import ArticleWithDjangoUsingSignals
 from learndjangoautoslug.models import ArticleWithDjangoAutoSlug
 from learndjangoautoslug.models import ArticleWithDjangoAutoSlugCustomSlugify
 from django.contrib.auth.models import User
 
 
 articlewithdjango = ArticleWithDjango.objects.create(title="hello world to all my pythonistas")
+articlewithdjangousingsignal = ArticleWithDjango.objects.create(title="hello world to all my pythonistas")
 articlewithdjangoautoslug = ArticleWithDjangoAutoSlug.objects.create(title="hello world to all my pythonistas")
 
 user=User.objects.create_user('foo', password='bar')
@@ -140,12 +174,19 @@ articlewithdjangoautoslugcustomslugfy
 """
 
 """
-In [5]: articlewithdjango
-Out[5]:
+In [4]: articlewithdjango
+Out[4]:
 
 id      :1
 title   :hello world to all my pythonistas
 slug    :
+
+In [5]: articlewithdjangousingsignal
+Out[5]:
+
+id      :1
+title   :Hello world my pythonistas
+slug    :hello-world-my-pythonistas
 
 
 In [6]: articlewithdjangoautoslug
